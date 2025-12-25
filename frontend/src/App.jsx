@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import OverallScore from "./components/OverallScore";
+import SkillScores from "./components/SkillScores";
+import Feedback from "./components/Feedback";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [report, setReport] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/report")
+      .then(res => res.json())
+      .then(data => setReport(data));
+  }, []);
+
+  if (!report) return <p>Loading...</p>;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ padding: "20px" }}>
+      <h1>Student Speaking Assessment Report</h1>
+      <OverallScore score={report.overallScore} />
+      <SkillScores skills={report.skills} />
+      <Feedback score={report.overallScore} />
+    </div>
+  );
 }
 
-export default App
+export default App;
+
